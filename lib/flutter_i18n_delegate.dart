@@ -24,10 +24,13 @@ class FlutterI18nDelegate extends LocalizationsDelegate<FlutterI18n> {
   @override
   Future<FlutterI18n> load(final Locale locale) async {
     MessagePrinter.info("New locale: $locale");
-    if (FlutterI18nDelegate._currentTranslationObject == null ||
-        FlutterI18nDelegate._currentTranslationObject.locale != locale) {
+    if (FlutterI18nDelegate._currentTranslationObject == null) {
       FlutterI18nDelegate._currentTranslationObject =
           FlutterI18n(translationLoader);
+      await FlutterI18nDelegate._currentTranslationObject.load();
+    } else if (FlutterI18nDelegate._currentTranslationObject.locale != locale) {
+      FlutterI18nDelegate._currentTranslationObject.translationLoader.locale =
+          locale;
       await FlutterI18nDelegate._currentTranslationObject.load();
     }
     return FlutterI18nDelegate._currentTranslationObject;
